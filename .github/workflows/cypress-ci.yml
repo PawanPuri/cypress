@@ -10,19 +10,28 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest # Change to windows-latest if required
+    runs-on: ubuntu-latest
 
     steps:
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: 🏗 Set Up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: 📦 Install Dependencies
         run: npm install
+
+      - name: 🚀 Start React App (Background)
+        run: npm start &
+      
+      - name: ⏳ Wait for App to be Ready
+        run: |
+          echo "Waiting for app to start..."
+          npx wait-on http://localhost:3000
+        timeout-minutes: 2  # Wait for a maximum of 2 minutes
 
       - name: 🛠 Run Cypress Tests (Headless)
         run: npx cypress run --browser chrome
@@ -32,6 +41,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cypress-artifacts
-          path: |
-            cypress/screenshots
-            cypress/videos
+          path: cypress/screenshots
