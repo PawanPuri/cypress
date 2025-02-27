@@ -24,14 +24,15 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm install
 
-      - name: 🚀 Start React App (Background)
-        run: npm start &
+      - name: 🏗 Build React App
+        run: npm run build
+
+      - name: 🚀 Start Production Server
+        run: npx serve -s build -l 3000 &
       
       - name: ⏳ Wait for App to be Ready
-        run: |
-          echo "Waiting for app to start..."
-          npx wait-on http://localhost:3000
-        timeout-minutes: 2  # Wait for a maximum of 2 minutes
+        run: npx wait-on http://localhost:3000
+        timeout-minutes: 2
 
       - name: 🛠 Run Cypress Tests (Headless)
         run: npx cypress run --browser chrome
